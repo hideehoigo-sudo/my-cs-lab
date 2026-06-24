@@ -1,38 +1,802 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>CS Practice</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>CS Practice｜資工工具練習室</title>
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --border: #e5e7eb;
+      --shadow: 0 10px 25px rgba(0,0,0,0.08);
+      --radius: 18px;
+    }
+
+    body.dark {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --primary: #60a5fa;
+      --primary-dark: #3b82f6;
+      --accent: #34d399;
+      --danger: #f87171;
+      --warning: #fbbf24;
+      --border: #334155;
+      --shadow: 0 10px 25px rgba(0,0,0,0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    body.dark header {
+      background: rgba(15,23,42,0.85);
+    }
+
+    .nav {
+      max-width: 1100px;
+      margin: auto;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--primary);
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-weight: 700;
+      background: var(--primary);
+      color: white;
+      transition: transform 0.15s, background 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: var(--primary-dark);
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    button.success {
+      background: var(--accent);
+    }
+
+    button.warning {
+      background: var(--warning);
+      color: #111827;
+    }
+
+    button.danger {
+      background: var(--danger);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: auto;
+      padding: 32px 20px 80px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .hero-card, .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      line-height: 1.2;
+      margin: 0 0 16px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(37,99,235,0.12);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .hero-image {
+      text-align: center;
+    }
+
+    .hero-image svg {
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin: 22px 0;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .card p {
+      color: var(--muted);
+    }
+
+    .progress-box {
+      margin-top: 16px;
+      background: var(--border);
+      border-radius: 999px;
+      height: 14px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.4s;
+    }
+
+    .tool-search {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 16px;
+      margin: 16px 0;
+    }
+
+    .tool-card {
+      border-left: 5px solid var(--primary);
+    }
+
+    .checklist label {
+      display: block;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .checklist input {
+      margin-right: 8px;
+      transform: scale(1.2);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin: 12px 0;
+    }
+
+    input, select, textarea {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .preview {
+      background: rgba(37,99,235,0.08);
+      border: 1px dashed var(--primary);
+      padding: 16px;
+      border-radius: 14px;
+      white-space: pre-wrap;
+      margin-top: 14px;
+    }
+
+    .game-area {
+      height: 320px;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px),
+        linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      margin-top: 16px;
+    }
+
+    .fault {
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--danger);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: 0 8px 18px rgba(239,68,68,0.35);
+      animation: pulse 0.6s infinite alternate;
+      user-select: none;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.18); }
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99;
+      padding: 20px;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--card);
+      color: var(--text);
+      max-width: 520px;
+      padding: 26px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 40px;
+    }
+
+    @media (max-width: 850px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <h1>CS Practice</h1>
+  <header>
+    <div class="nav">
+      <div class="brand">CS Practice</div>
 
-  <p>這是我的資工工具練習專案。</p>
+      <div class="nav-buttons">
+        <button class="secondary" onclick="showPage('home')">首頁</button>
+        <button class="secondary" onclick="showPage('tools')">工具地圖</button>
+        <button class="secondary" onclick="showPage('linebot')">LINE Bot</button>
+        <button class="secondary" onclick="showPage('repair')">報修表單</button>
+        <button class="secondary" onclick="showPage('game')">小遊戲</button>
+        <button onclick="toggleDarkMode()">深色模式</button>
+      </div>
+    </div>
+  </header>
 
-  <h2>專案目標</h2>
-  <ul>
-    <li>學習 GitHub 專案管理</li>
-    <li>練習使用 Issue 拆解任務</li>
-    <li>部署一個簡單網頁</li>
-    <li>理解 LINE Bot 與 Webhook</li>
-    <li>使用 Google Sheet 當簡易資料庫</li>
-    <li>學習自動化工具應用</li>
-  </ul>
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <h1>資工工具練習室</h1>
+        <p>
+          這不是純寫程式的專案，而是用 GitHub、網頁部署、LINE Bot、Webhook、
+          Google Sheet、自動化工具，建立一個能真的理解資料流的練習場。
+        </p>
 
-  <h2>目前進度</h2>
-  <ul>
-    <li>已建立 GitHub repository</li>
-    <li>已建立 README</li>
-    <li>已練習 GitHub Issues</li>
-    <li>正在部署第一個網頁</li>
-  </ul>
+        <div class="tag-list">
+          <span class="tag">GitHub</span>
+          <span class="tag">GitHub Pages</span>
+          <span class="tag">LINE Bot</span>
+          <span class="tag">Webhook</span>
+          <span class="tag">Google Sheet</span>
+          <span class="tag">Automation</span>
+        </div>
 
-  <h2>未來想做的功能</h2>
-  <ul>
-    <li>發票兌獎 LINE Bot</li>
-    <li>設備報修系統</li>
-    <li>巡檢紀錄系統</li>
-    <li>報修統計 Dashboard</li>
-  </ul>
+        <p>
+          <button onclick="showPage('tools')">開始看工具地圖</button>
+          <button class="success" onclick="openModal()">這個專案在練什麼？</button>
+        </p>
+      </div>
+
+      <div class="hero-card hero-image">
+        <svg viewBox="0 0 420 320" role="img" aria-label="資工工具示意圖">
+          <rect x="35" y="40" width="350" height="230" rx="28" fill="#2563eb" opacity="0.12"/>
+          <rect x="70" y="80" width="280" height="150" rx="18" fill="#2563eb"/>
+          <rect x="95" y="105" width="230" height="90" rx="10" fill="white"/>
+          <circle cx="120" cy="125" r="8" fill="#ef4444"/>
+          <circle cx="145" cy="125" r="8" fill="#f59e0b"/>
+          <circle cx="170" cy="125" r="8" fill="#10b981"/>
+          <rect x="115" y="150" width="90" height="10" rx="5" fill="#94a3b8"/>
+          <rect x="115" y="172" width="160" height="10" rx="5" fill="#94a3b8"/>
+          <circle cx="210" cy="260" r="24" fill="#10b981"/>
+          <text x="210" y="268" text-anchor="middle" font-size="26" fill="white">✓</text>
+          <circle cx="320" cy="60" r="30" fill="#f59e0b"/>
+          <text x="320" y="70" text-anchor="middle" font-size="34" fill="white">⚙</text>
+          <circle cx="65" cy="230" r="26" fill="#ef4444"/>
+          <text x="65" y="238" text-anchor="middle" font-size="28" fill="white">!</text>
+        </svg>
+      </div>
+    </section>
+
+    <section id="home" class="page active">
+      <div class="grid">
+        <div class="card">
+          <h3>第一階段：GitHub</h3>
+          <p>學會 repo、README、Issue、Label、資料夾架構。</p>
+        </div>
+
+        <div class="card">
+          <h3>第二階段：部署網頁</h3>
+          <p>使用 GitHub Pages 把專案變成可公開打開的網站。</p>
+        </div>
+
+        <div class="card">
+          <h3>第三階段：LINE Bot</h3>
+          <p>理解 LINE、Webhook、後端、Google Sheet 的資料流程。</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>學習進度</h2>
+        <p>勾選後會存在你的瀏覽器裡。重新整理也會保留。</p>
+
+        <div class="checklist">
+          <label><input type="checkbox" class="task" data-id="repo"> 建立 GitHub repository</label>
+          <label><input type="checkbox" class="task" data-id="readme"> 完成 README</label>
+          <label><input type="checkbox" class="task" data-id="issues"> 建立 Issues</label>
+          <label><input type="checkbox" class="task" data-id="folders"> 建立資料夾架構</label>
+          <label><input type="checkbox" class="task" data-id="pages"> 啟用 GitHub Pages</label>
+          <label><input type="checkbox" class="task" data-id="line"> 研究 LINE Bot Webhook</label>
+        </div>
+
+        <div class="progress-box">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <p id="progressText">目前進度：0%</p>
+      </div>
+    </section>
+
+    <section id="tools" class="page">
+      <div class="card">
+        <h2>工具地圖</h2>
+        <p>輸入關鍵字可以篩選工具，例如：bot、部署、資料庫、API。</p>
+
+        <input class="tool-search" id="toolSearch" placeholder="搜尋工具..." oninput="filterTools()">
+
+        <div class="grid" id="toolList">
+          <div class="card tool-card" data-keyword="github 專案 issue readme">
+            <h3>GitHub</h3>
+            <p>管理專案、文件、任務、版本紀錄。</p>
+          </div>
+
+          <div class="card tool-card" data-keyword="部署 網頁 pages github pages">
+            <h3>GitHub Pages</h3>
+            <p>把靜態網頁發布成公開網址。</p>
+          </div>
+
+          <div class="card tool-card" data-keyword="line bot webhook 訊息">
+            <h3>LINE Bot</h3>
+            <p>讓使用者從 LINE 傳訊息進入你的系統。</p>
+          </div>
+
+          <div class="card tool-card" data-keyword="api get post json">
+            <h3>API</h3>
+            <p>讓不同系統交換資料的接口。</p>
+          </div>
+
+          <div class="card tool-card" data-keyword="google sheet 資料庫 表格">
+            <h3>Google Sheet</h3>
+            <p>初期可當簡易資料庫，記錄發票、報修、巡檢資料。</p>
+          </div>
+
+          <div class="card tool-card" data-keyword="make n8n 自動化 trigger action">
+            <h3>Make / n8n</h3>
+            <p>用低程式碼方式串接通知、表單與資料流程。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="linebot" class="page">
+      <div class="card">
+        <h2>LINE Bot 資料流</h2>
+
+        <p>LINE Bot 不是只有 LINE。真正重點是資料怎麼流動。</p>
+
+        <div class="grid">
+          <div class="card">
+            <h3>1. 使用者輸入</h3>
+            <p>使用者傳文字、照片、發票號碼或報修內容。</p>
+          </div>
+
+          <div class="card">
+            <h3>2. Webhook</h3>
+            <p>LINE 把事件送到你設定的 Webhook URL。</p>
+          </div>
+
+          <div class="card">
+            <h3>3. 後端處理</h3>
+            <p>Apps Script、伺服器或自動化工具接收資料並判斷。</p>
+          </div>
+
+          <div class="card">
+            <h3>4. 寫入資料</h3>
+            <p>把發票、報修或巡檢資料寫入 Google Sheet。</p>
+          </div>
+
+          <div class="card">
+            <h3>5. 回覆使用者</h3>
+            <p>Bot 回覆：「已收到」、「已建立案件」、「查詢成功」。</p>
+          </div>
+
+          <div class="card">
+            <h3>6. 後續通知</h3>
+            <p>中獎、結案、逾期或異常時自動提醒。</p>
+          </div>
+        </div>
+
+        <button onclick="alert('下一步：建立 line-bot/webhook-flow.md，把這個流程寫成正式文件。')">
+          下一步要做什麼？
+        </button>
+      </div>
+    </section>
+
+    <section id="repair" class="page">
+      <div class="card">
+        <h2>設備報修表單 Prototype</h2>
+        <p>這裡不會真的送出資料，只是先練習前端表單與資料預覽。</p>
+
+        <div class="form-row">
+          <label>樓層</label>
+          <select id="floor">
+            <option>1F</option>
+            <option>4F</option>
+            <option>6F</option>
+            <option>8F</option>
+            <option>12F</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>設備類型</label>
+          <select id="device">
+            <option>空調</option>
+            <option>照明</option>
+            <option>衛浴</option>
+            <option>給排水</option>
+            <option>電力</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>嚴重程度</label>
+          <select id="level">
+            <option>S1 使用者報修</option>
+            <option>S2 工務巡檢</option>
+            <option>S3 委外修繕</option>
+            <option>S4 納入改建</option>
+            <option>S5 立即處理</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>異常描述</label>
+          <textarea id="desc" placeholder="例如：6F 男廁小便斗排水不順，現場有異味。"></textarea>
+        </div>
+
+        <button onclick="previewRepair()">產生報修資料</button>
+        <button class="secondary" onclick="clearRepair()">清除</button>
+
+        <div class="preview" id="repairPreview">尚未產生資料。</div>
+      </div>
+    </section>
+
+    <section id="game" class="page">
+      <div class="card">
+        <h2>小遊戲：工務巡檢抓異常</h2>
+        <p>點擊紅色驚嘆號，代表你在巡檢中抓到異常。20 秒內看你能抓幾個。</p>
+
+        <p>
+          分數：<strong id="score">0</strong>
+          ｜剩餘時間：<strong id="timeLeft">20</strong> 秒
+        </p>
+
+        <button onclick="startGame()">開始巡檢</button>
+        <button class="danger" onclick="stopGame()">停止</button>
+
+        <div class="game-area" id="gameArea"></div>
+      </div>
+    </section>
+
+    <footer>
+      <p>CS Practice｜GitHub Pages 練習網站</p>
+    </footer>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h2>這個專案在練什麼？</h2>
+      <p>
+        這個專案不是單純做一個漂亮網頁，而是練習資工工具的基本地圖：
+        專案管理、部署、API、Webhook、資料儲存、自動化、使用者入口。
+      </p>
+      <p>
+        你現在做的是第一個可公開展示的 prototype。
+      </p>
+      <button onclick="closeModal()">關閉</button>
+    </div>
+  </div>
+
+  <script>
+    function showPage(pageId) {
+      const pages = document.querySelectorAll(".page");
+      pages.forEach(page => page.classList.remove("active"));
+
+      document.getElementById(pageId).classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+
+      const isDark = document.body.classList.contains("dark");
+      localStorage.setItem("darkMode", isDark ? "yes" : "no");
+    }
+
+    function openModal() {
+      document.getElementById("modalBackdrop").classList.add("show");
+    }
+
+    function closeModal() {
+      document.getElementById("modalBackdrop").classList.remove("show");
+    }
+
+    function filterTools() {
+      const keyword = document.getElementById("toolSearch").value.toLowerCase();
+      const cards = document.querySelectorAll(".tool-card");
+
+      cards.forEach(card => {
+        const text = card.dataset.keyword.toLowerCase() + card.innerText.toLowerCase();
+        card.style.display = text.includes(keyword) ? "block" : "none";
+      });
+    }
+
+    function updateProgress() {
+      const tasks = document.querySelectorAll(".task");
+      const checked = document.querySelectorAll(".task:checked").length;
+      const percent = Math.round((checked / tasks.length) * 100);
+
+      document.getElementById("progressBar").style.width = percent + "%";
+      document.getElementById("progressText").innerText = "目前進度：" + percent + "%";
+
+      tasks.forEach(task => {
+        localStorage.setItem("task-" + task.dataset.id, task.checked ? "yes" : "no");
+      });
+    }
+
+    function loadProgress() {
+      const tasks = document.querySelectorAll(".task");
+
+      tasks.forEach(task => {
+        const saved = localStorage.getItem("task-" + task.dataset.id);
+        task.checked = saved === "yes";
+        task.addEventListener("change", updateProgress);
+      });
+
+      updateProgress();
+    }
+
+    function previewRepair() {
+      const floor = document.getElementById("floor").value;
+      const device = document.getElementById("device").value;
+      const level = document.getElementById("level").value;
+      const desc = document.getElementById("desc").value.trim();
+
+      const now = new Date().toLocaleString("zh-TW");
+
+      const result =
+`報修時間：${now}
+樓層：${floor}
+設備類型：${device}
+嚴重程度：${level}
+異常描述：${desc || "未填寫"}
+
+系統回覆：
+已收到報修資料，案件狀態：待處理。`;
+
+      document.getElementById("repairPreview").innerText = result;
+    }
+
+    function clearRepair() {
+      document.getElementById("desc").value = "";
+      document.getElementById("repairPreview").innerText = "尚未產生資料。";
+    }
+
+    let score = 0;
+    let timeLeft = 20;
+    let gameTimer = null;
+    let faultTimer = null;
+
+    function startGame() {
+      stopGame();
+
+      score = 0;
+      timeLeft = 20;
+
+      document.getElementById("score").innerText = score;
+      document.getElementById("timeLeft").innerText = timeLeft;
+      document.getElementById("gameArea").innerHTML = "";
+
+      gameTimer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timeLeft").innerText = timeLeft;
+
+        if (timeLeft <= 0) {
+          stopGame();
+          alert("巡檢結束，你抓到 " + score + " 個異常！");
+        }
+      }, 1000);
+
+      faultTimer = setInterval(createFault, 800);
+    }
+
+    function stopGame() {
+      clearInterval(gameTimer);
+      clearInterval(faultTimer);
+      gameTimer = null;
+      faultTimer = null;
+      document.getElementById("gameArea").innerHTML = "";
+    }
+
+    function createFault() {
+      const area = document.getElementById("gameArea");
+      const fault = document.createElement("div");
+
+      fault.className = "fault";
+      fault.innerText = "!";
+      fault.title = "設備異常";
+
+      const maxX = area.clientWidth - 50;
+      const maxY = area.clientHeight - 50;
+
+      fault.style.left = Math.random() * maxX + "px";
+      fault.style.top = Math.random() * maxY + "px";
+
+      fault.onclick = function () {
+        score++;
+        document.getElementById("score").innerText = score;
+        fault.remove();
+      };
+
+      area.appendChild(fault);
+
+      setTimeout(() => {
+        if (fault.parentNode) {
+          fault.remove();
+        }
+      }, 1600);
+    }
+
+    window.onload = function () {
+      if (localStorage.getItem("darkMode") === "yes") {
+        document.body.classList.add("dark");
+      }
+
+      loadProgress();
+    };
+  </script>
 </body>
 </html>
