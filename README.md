@@ -91,3 +91,10 @@ LINE 通知系統
 專案狀態
 
 目前狀態：第一階段，建立專案架構與學習 GitHub 基本操作。
+
+
+## 網站連結
+
+GitHub Pages：
+
+https://hideehoigo-sudo.github.io/my-cs-lab/
