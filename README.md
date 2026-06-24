@@ -484,3 +484,7 @@ Looker Studio：資料視覺化
 GitHub Pages：
 
 https://hideehoigo-sudo.github.io/my-cs-lab/
+
+
+Vercel：
+https://my-cs-lab-dnwi.vercel.app/
